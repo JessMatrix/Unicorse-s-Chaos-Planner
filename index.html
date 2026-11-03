@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unicorse’s Chaos Planner</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Pacifico&display=swap">
+<style>
+:root{
+  --sky:#d9c8f5;--blue:#8a5bd0;--deep:#5f3a99;--ink:#3a2260;--cream:#ffeaf6;--card:#ffffff;
+  --orange:#d93f94;--peach:#ffd0b0;--yellow:#fff0a0;--mint:#b4efd6;--pink:#ffc2e0;
+  --muted:#7a63a0;--line:#e6d8fa;--bg:#f6ecff;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sky:#3a2766;--blue:#8a5bd0;--deep:#e0cbff;--ink:#f5ecff;--cream:#3d2150;--card:#2a1b4a;
+  --muted:#bba8de;--line:#4a3478;--bg:#1a1030;color-scheme:dark;}}
+:root[data-theme="dark"]{--sky:#3a2766;--blue:#8a5bd0;--deep:#e0cbff;--ink:#f5ecff;--cream:#3d2150;--card:#2a1b4a;--muted:#bba8de;--line:#4a3478;--bg:#1a1030;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Fredoka",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:radial-gradient(circle at 12px 12px,var(--line) 2px,transparent 2.5px);background-size:28px 28px}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+header{background:var(--blue);color:#fff;border-radius:28px;padding:18px 20px 0;position:relative;overflow:hidden;box-shadow:0 6px 0 var(--deep)}
+header h1{margin:0;font-family:"Pacifico","Brush Script MT",cursive;font-size:clamp(1.5rem,5vw,2.2rem);font-weight:400;line-height:1.25;display:flex;align-items:center;gap:8px;text-shadow:0 2px 0 var(--deep)}
+header h1 svg{flex:none;width:34px;height:42px}
+header::after{content:'✨';position:absolute;right:16px;bottom:22px;font-size:1.4rem;opacity:.85}
+header p{margin:2px 0 14px;opacity:.9}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.sstat{font-size:.78rem;opacity:.9;text-align:right;margin-top:4px}
+dialog{border:3px solid var(--blue);border-radius:24px;background:var(--card);color:var(--ink);max-width:min(92vw,460px);padding:18px}
+dialog::backdrop{background:rgba(26,16,48,.6)}
+dialog h2{margin:0 0 6px}dialog p,dialog li{font-size:.92rem;color:var(--muted)}dialog ol{padding-left:20px;margin:6px 0 12px}
+dialog input[type=password]{width:100%;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:8px 12px;margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.stripe{height:14px;margin:0 -20px;background:linear-gradient(90deg,#ffb3d9,#ffd9a8,#fff3a0,#b8f0d0,#b3dcff,#d4b8ff)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:999px;padding:8px 16px;background:var(--card);color:var(--deep);font-weight:600;box-shadow:0 3px 0 var(--line)}
+button:hover{filter:brightness(.97)}button:active{transform:translateY(2px);box-shadow:none}
+button.pri{background:var(--orange);color:#fff;box-shadow:0 3px 0 #a8307a}
+button.ghost{background:transparent;box-shadow:none;padding:4px 8px}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+input[type=date],input[type=time],input[type=text]{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:8px 12px;min-width:0}
+.datebig{font-size:1.35rem;font-weight:700;flex:1;min-width:180px}
+.grid{display:grid;grid-template-columns:1fr 330px;gap:16px;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.sec{background:var(--card);border-radius:22px;border:3px solid var(--c,var(--sky));margin-bottom:14px;overflow:hidden}
+.sec-h{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--c,var(--sky))}
+.sec-h input{flex:1;min-width:0;background:transparent;border:0;font-weight:700;font-size:1.05rem;color:#1f3a5c;padding:4px 6px}
+.sec-h button{background:rgba(255,255,255,.65);box-shadow:none;padding:4px 10px;color:#1f3a5c}
+.sec-h .emo{font-size:1.2rem;padding:2px 8px}
+textarea{width:100%;border:0;background:transparent;resize:vertical;min-height:110px;padding:12px 14px;line-height:1.5}
+textarea:focus{outline:none;background:color-mix(in srgb,var(--c,var(--sky)) 12%,transparent)}
+.panel{background:var(--cream);border-radius:22px;padding:14px;border:3px dashed var(--orange)}
+.panel h2{margin:0 0 8px;font-size:1.2rem}
+.rform{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}
+.rform input[type=text]{grid-column:1/-1}
+.rem{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:14px;padding:8px 10px;margin-bottom:6px}
+.rem.done span.t{text-decoration:line-through;opacity:.55}
+.rem .time{font-weight:700;color:var(--orange);min-width:3.4rem}
+.rem .t{flex:1;word-break:break-word}
+.rem input{width:20px;height:20px;accent-color:var(--blue)}
+.empty{color:var(--muted);text-align:center;padding:10px}
+.note{font-size:.85rem;color:var(--muted);margin:8px 0 0}
+.banner{background:var(--yellow);color:#4b3a00;border-radius:14px;padding:8px 12px;margin-bottom:10px;display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:.92rem}
+.add{width:100%;padding:12px;background:var(--card);border:3px dashed var(--blue);box-shadow:none;border-radius:22px}
+#toasts{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50;width:min(92vw,380px)}
+.toast{background:var(--orange);color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 6px 0 #a8307a;display:flex;gap:10px;align-items:center;font-weight:600;animation:pop .35s}
+.toast span{flex:1}.toast button{background:#fff;color:#a8307a;padding:4px 12px}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+@media(prefers-reduced-motion:reduce){.toast{animation:none}}
+</style>
+</head>
+<body>
+<div id="toasts" aria-live="assertive"></div>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div><h1><svg viewBox="0 0 34 42" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffb3d9"/><stop offset=".5" stop-color="#fff3a0"/><stop offset="1" stop-color="#b3dcff"/></linearGradient></defs><path d="M17 2 L28 38 Q17 42 6 38 Z" fill="url(#hg)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M11 28 Q17 31 23 26 M13 19 Q17 21 21 17 M15 11 Q17 12 19 10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Unicorse’s Chaos Planner</h1><p>Plan the chaos, one day at a time.</p></div>
+      <div><button id="syncbtn">☁️ Sync</button> <button id="theme" title="Switch light or dark">🌙</button><div class="sstat" id="sstat"></div></div>
+    </div>
+    <div class="stripe"></div>
+  </header>
+
+  <div class="nav">
+    <button id="prev" aria-label="Previous day">◀</button>
+    <div class="datebig" id="dlabel"></div>
+    <input type="date" id="dpick" aria-label="Pick a date">
+    <button id="today" class="pri">Today</button>
+    <button id="next" aria-label="Next day">▶</button>
+  </div>
+
+  <div class="grid">
+    <main>
+      <div id="secs"></div>
+      <button class="add" id="addsec">＋ Add a section</button>
+      <p class="note">New days start with your default layout. <button class="ghost" id="savetpl">Save this day’s sections as default</button></p>
+    </main>
+    <aside class="panel">
+      <h2>⏰ Reminders</h2>
+      <div id="perm"></div>
+      <div class="rform">
+        <input type="text" id="rtext" placeholder="What should I remind you about?" maxlength="120">
+        <input type="time" id="rtime" aria-label="Reminder time">
+        <button class="pri" id="radd">Add reminder</button>
+      </div>
+      <div id="rlist"></div>
+      <p class="note">Reminders ring while this page is open on each device. Allow notifications to hear about them even from another tab.</p>
+    </aside>
+  </div>
+</div>
+
+<dialog id="dlg">
+  <h2>☁️ Sync between devices</h2>
+  <div id="nosetup" hidden><p>Syncing isn’t switched on yet. The site owner needs to add a database address once (see the notes at the top of the script in <b>index.html</b>).</p></div>
+  <div id="off" hidden>
+    <p>Make a sync code on one device, then type it into your other devices. No accounts needed.</p>
+    <div class="row"><button class="pri" id="mk">Create a sync code</button></div>
+    <p>Already have a code?</p>
+    <input type="text" id="joinin" placeholder="xxxxx-xxxxx-xxxxx-xxxxx" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="row"><button id="join">Join with this code</button></div>
+  </div>
+  <div id="on" hidden>
+    <p>Your sync code. Anyone who has it can read and edit these notes, so only share it with people you trust.</p>
+    <p><b id="code" style="font-size:1.2rem;color:var(--ink);word-break:break-all"></b></p>
+    <div class="row"><button class="pri" id="copy">Copy code</button><button id="syncnow">Sync now</button><button id="stop">Stop syncing</button></div>
+  </div>
+  <p id="dstat"></p>
+  <div class="row"><button id="exp">Export backup</button><button id="imp">Import backup</button><button id="closed">Close</button></div>
+  <input type="file" id="file" accept="application/json" hidden>
+</dialog>
+<script>
+(function(){
+/* ONE-TIME SETUP FOR SYNC (site owner only):
+   1. Create a free Firebase project, then add a Realtime Database (start in locked mode).
+   2. In its Rules tab, paste: {"rules":{".read":false,".write":false,"notes":{"$code":{".read":true,".write":true}}}}
+   3. Copy the database address from the Data tab and paste it between the quotes below. */
+const DB_URL='';
+const KEY='backyard-notes-v2',TK='backyard-notes-sync',FK='backyard-notes-fired';
+const COLORS=['#a9d6f5','#fbc88f','#f8d66d','#9fdcc0','#f5b5c8','#c9b8f0'];
+const EMOJI=['🩺','🦄','🌈','✨','🌅','☀️','🌙','💼','🎲','🙏','🛒','💡','🏃','🍽️','📚','🏠','🎨','❤️'];
+const DEFAULT_TPL=[
+  {title:'Symptoms',icon:'🩺',color:COLORS[4]},
+  {title:'Morning tasks',icon:'🌅',color:COLORS[1]},
+  {title:'Afternoon tasks',icon:'☀️',color:COLORS[2]},
+  {title:'Evening tasks',icon:'🌙',color:COLORS[0]}
+];
+let S={days:{},template:{u:0,t:DEFAULT_TPL},reminders:[],theme:null};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+let T={code:''};
+try{const r=localStorage.getItem(TK);if(r)T=Object.assign(T,JSON.parse(r))}catch(e){}
+let fired=new Set();
+try{fired=new Set(JSON.parse(localStorage.getItem(FK)||'[]'))}catch(e){}
+const saveFired=()=>{try{localStorage.setItem(FK,JSON.stringify([...fired].slice(-300)))}catch(e){}};
+let pushT;
+const save=(push=true)=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(push&&T.code){clearTimeout(pushT);pushT=setTimeout(()=>sync(),2500)}};
+const $=id=>document.getElementById(id);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let cur=ymd(new Date());
+
+function applyTheme(){
+  if(S.theme)document.documentElement.setAttribute('data-theme',S.theme);
+  const dark=S.theme?S.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  $('theme').textContent=dark?'☀️':'🌙';
+}
+$('theme').onclick=()=>{
+  const dark=S.theme?S.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  S.theme=dark?'light':'dark';save();applyTheme();
+};
+
+function secs(){
+  if(!S.days[cur])S.days[cur]={u:0,s:S.template.t.map(t=>({id:uid(),title:t.title,icon:t.icon,color:t.color,text:''}))};
+  return S.days[cur].s;
+}
+const touch=()=>{secs();S.days[cur].u=Date.now()};
+function label(){
+  const [y,m,d]=cur.split('-').map(Number);
+  const dt=new Date(y,m-1,d);
+  $('dlabel').textContent=dt.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})+(cur===ymd(new Date())?' · today':'');
+  $('dpick').value=cur;
+}
+function renderSecs(){
+  const list=secs();
+  $('secs').innerHTML=list.map((s,i)=>`
+    <section class="sec" style="--c:${s.color}" data-i="${i}">
+      <div class="sec-h">
+        <button class="emo" data-a="emo" title="Change icon">${s.icon}</button>
+        <input value="${esc(s.title)}" data-a="title" aria-label="Section name" maxlength="40">
+        <button data-a="col" title="Change colour">🎨</button>
+        <button data-a="up" title="Move up" ${i===0?'disabled':''}>↑</button>
+        <button data-a="del" title="Delete section">✕</button>
+      </div>
+      <textarea data-a="text" placeholder="Write something for ${esc(s.title||'this section')}…" aria-label="${esc(s.title)} notes">${esc(s.text)}</textarea>
+    </section>`).join('')||'<div class="empty">No sections yet. Add one below.</div>';
+}
+$('secs').addEventListener('input',e=>{
+  const el=e.target,sec=el.closest('.sec');if(!sec)return;
+  const s=secs()[+sec.dataset.i];
+  if(el.dataset.a==='text')s.text=el.value;
+  if(el.dataset.a==='title')s.title=el.value;
+  touch();save();
+});
+$('secs').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const sec=b.closest('.sec'),i=+sec.dataset.i,list=secs(),s=list[i];
+  const a=b.dataset.a;
+  if(a==='emo')s.icon=EMOJI[(EMOJI.indexOf(s.icon)+1)%EMOJI.length];
+  else if(a==='col')s.color=COLORS[(COLORS.indexOf(s.color)+1)%COLORS.length];
+  else if(a==='up'&&i>0)[list[i-1],list[i]]=[list[i],list[i-1]];
+  else if(a==='del'){if(s.text&&!confirm('Delete “'+s.title+'” and its notes?'))return;list.splice(i,1)}
+  else return;
+  touch();save();renderSecs();
+});
+$('addsec').onclick=()=>{
+  secs().push({id:uid(),title:'New section',icon:EMOJI[Math.floor(Math.random()*EMOJI.length)],color:COLORS[Math.floor(Math.random()*COLORS.length)],text:''});
+  touch();save();renderSecs();
+  const t=document.querySelectorAll('.sec-h input');const l=t[t.length-1];l&&(l.focus(),l.select());
+};
+$('savetpl').onclick=()=>{
+  S.template={u:Date.now(),t:secs().map(s=>({title:s.title,icon:s.icon,color:s.color}))};save();
+  toast('Saved! New days will start with these sections.',false);
+};
+
+function go(d){cur=d;label();renderSecs();renderRem()}
+function shift(n){const [y,m,d]=cur.split('-').map(Number);go(ymd(new Date(y,m-1,d+n)))}
+$('prev').onclick=()=>shift(-1);$('next').onclick=()=>shift(1);
+$('today').onclick=()=>go(ymd(new Date()));
+$('dpick').onchange=e=>e.target.value&&go(e.target.value);
+
+/* Reminders */
+function renderRem(){
+  const list=S.reminders.filter(r=>r.date===cur&&!r.del).sort((a,b)=>a.time.localeCompare(b.time));
+  $('rlist').innerHTML=list.map(r=>`
+    <div class="rem ${r.done?'done':''}" data-id="${r.id}">
+      <input type="checkbox" ${r.done?'checked':''} aria-label="Done">
+      <span class="time">${r.time}</span><span class="t">${esc(r.text)}</span>
+      <button class="ghost" data-del title="Delete reminder">✕</button>
+    </div>`).join('')||'<div class="empty">No reminders for this day.</div>';
+  renderPerm();
+}
+function renderPerm(){
+  const p=('Notification' in window)?Notification.permission:'unsupported';
+  $('perm').innerHTML=p==='default'?'<div class="banner"><span>Turn on pop-up alerts?</span><button class="pri" id="askperm">Allow</button></div>':'';
+  const b=$('askperm');if(b)b.onclick=()=>{try{Notification.requestPermission().then(renderPerm)}catch(e){}};
+}
+$('radd').onclick=()=>{
+  const text=$('rtext').value.trim(),time=$('rtime').value;
+  if(!text||!time){toast('Add a reminder and a time first.',false);return}
+  S.reminders.push({id:uid(),date:cur,time,text,done:false,u:Date.now()});
+  $('rtext').value='';save();renderRem();check();
+};
+$('rtext').addEventListener('keydown',e=>{if(e.key==='Enter')$('radd').click()});
+$('rlist').addEventListener('click',e=>{
+  const row=e.target.closest('.rem');if(!row)return;
+  const r=S.reminders.find(x=>x.id===row.dataset.id);
+  if(e.target.matches('[data-del]')){r.del=true;r.u=Date.now()}
+  else if(e.target.type==='checkbox'){r.done=e.target.checked;r.u=Date.now()}
+  else return;
+  save();renderRem();
+});
+
+/* Alerts */
+let ac;
+function beep(){
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    [660,880,1100].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type='sine';
+      o.connect(g);g.connect(ac.destination);const t=ac.currentTime+i*.16;
+      g.gain.setValueAtTime(.15,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.start(t);o.stop(t+.16)})}catch(e){}
+}
+function toast(msg,sound){
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML='<span>'+esc(msg)+'</span><button>Got it</button>';
+  el.querySelector('button').onclick=()=>el.remove();
+  $('toasts').appendChild(el);
+  if(sound!==false)setTimeout(()=>el.remove(),60000);else setTimeout(()=>el.remove(),4000);
+}
+function check(){
+  const now=new Date(),nd=ymd(now),nt=pad(now.getHours())+':'+pad(now.getMinutes());
+  let changed=false;
+  S.reminders.forEach(r=>{
+    if(r.done||r.del||fired.has(r.id))return;
+    if(r.date<nd||(r.date===nd&&r.time<=nt)){
+      fired.add(r.id);changed=true;
+      toast('⏰ '+r.time+' · '+r.text,true);beep();
+      try{if('Notification' in window&&Notification.permission==='granted')new Notification('Unicorse’s Chaos Planner reminder',{body:r.text})}catch(e){}
+    }
+  });
+  if(changed){saveFired();renderRem()}
+}
+setInterval(check,10000);
+
+
+/* Sync with a shared code */
+const snap=()=>({days:S.days,template:S.template,reminders:S.reminders});
+const arr=x=>Array.isArray(x)?x:x?Object.values(x):[];
+function norm(r){
+  const o={days:{},template:r.template&&r.template.t?{u:r.template.u||0,t:arr(r.template.t)}:{u:0,t:DEFAULT_TPL},reminders:arr(r.reminders)};
+  Object.entries(r.days||{}).forEach(([k,d])=>{o.days[k]={u:d.u||0,s:arr(d.s).map(x=>Object.assign({text:''},x))}});
+  return o;
+}
+function merge(a,b){
+  const o={days:{},template:(a.template.u>=b.template.u)?a.template:b.template,reminders:[]};
+  new Set([...Object.keys(a.days),...Object.keys(b.days)]).forEach(k=>{const x=a.days[k],y=b.days[k];o.days[k]=!x?y:!y?x:(x.u>=y.u?x:y)});
+  const m={};[...a.reminders,...b.reminders].forEach(r=>{if(!m[r.id]||r.u>m[r.id].u)m[r.id]=r});
+  o.reminders=Object.values(m);return o;
+}
+function status(t){$('sstat').textContent=t;$('dstat').textContent=t}
+function showDlg(){
+  $('nosetup').hidden=!!DB_URL;$('off').hidden=!DB_URL||!!T.code;$('on').hidden=!DB_URL||!T.code;
+  $('code').textContent=T.code?T.code.match(/.{1,5}/g).join('-'):'';
+}
+const saveT=()=>{try{localStorage.setItem(TK,JSON.stringify(T))}catch(e){}};
+let busy=false;
+async function sync(joining){
+  if(!DB_URL||!T.code||busy)return;busy=true;status('Syncing…');
+  const url=DB_URL.replace(/\/$/,'')+'/notes/'+T.code+'.json';
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error('Could not reach the sync server ('+r.status+').');
+    const raw=await r.json();
+    if(joining===true&&!raw){T.code='';saveT();showDlg();throw new Error('No notes found for that code. Check it and try again.')}
+    const remote=norm(raw||{});
+    const before=JSON.stringify([S.days[cur],S.reminders]);
+    const m=merge(norm(snap()),remote);
+    S.days=m.days;S.template=m.template;S.reminders=m.reminders;
+    if(JSON.stringify(m)!==JSON.stringify(remote)){
+      const w=await fetch(url,{method:'PUT',body:JSON.stringify(snap())});if(!w.ok)throw new Error('Could not save to the sync server ('+w.status+').');
+    }
+    save(false);
+    if(before!==JSON.stringify([S.days[cur],S.reminders])){if(!document.activeElement||!document.activeElement.closest('.sec'))renderSecs();renderRem()}
+    status('Synced at '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}));
+  }catch(e){status(e.message)}
+  busy=false;
+}
+$('syncbtn').onclick=()=>{showDlg();$('dlg').showModal()};
+$('closed').onclick=()=>$('dlg').close();
+$('mk').onclick=()=>{const c=crypto.getRandomValues(new Uint8Array(20));
+  T.code=[...c].map(n=>'abcdefghjkmnpqrstuvwxyz23456789'[n%31]).join('');saveT();showDlg();sync()};
+$('join').onclick=()=>{const v=$('joinin').value.toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(v.length<16){status('That code looks too short.');return}
+  T.code=v;saveT();showDlg();sync(true).then(()=>showDlg())};
+$('syncnow').onclick=()=>sync();
+$('copy').onclick=()=>{try{navigator.clipboard.writeText($('code').textContent);status('Code copied.')}catch(e){status('Select the code and copy it by hand.')}};
+$('stop').onclick=()=>{T={code:''};saveT();showDlg();status('Sync stopped. Notes stay on this device.')};
+$('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(snap(),null,1)],{type:'application/json'}));a.download='unicorse-planner-'+ymd(new Date())+'.json';a.click()};
+$('imp').onclick=()=>$('file').click();
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const r=JSON.parse(t);const m=merge(norm(snap()),norm(r));S.days=m.days;S.template=m.template;S.reminders=m.reminders;save();renderSecs();renderRem();status('Backup merged in.')}catch(x){status('That file could not be read.')}})};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+setInterval(sync,60000);
+
+applyTheme();label();renderSecs();renderRem();check();sync();
+})();
+</script>
+</body>
+</html>
