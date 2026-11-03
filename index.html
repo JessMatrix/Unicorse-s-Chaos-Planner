@@ -137,7 +137,7 @@ textarea:focus{outline:none;background:color-mix(in srgb,var(--c,var(--sky)) 12%
    1. Create a free Firebase project, then add a Realtime Database (start in locked mode).
    2. In its Rules tab, paste: {"rules":{".read":false,".write":false,"notes":{"$code":{".read":true,".write":true}}}}
    3. Copy the database address from the Data tab and paste it between the quotes below. */
-const DB_URL='https://console.firebase.google.com/u/0/project/unicorses-chaos-planner/database/unicorses-chaos-planner-default-rtdb/data/~2F';
+const DB_URL='https://unicorses-chaos-planner-default-rtdb.europe-west1.firebasedatabase.app';
 const KEY='backyard-notes-v2',TK='backyard-notes-sync',FK='backyard-notes-fired';
 const COLORS=['#a9d6f5','#fbc88f','#f8d66d','#9fdcc0','#f5b5c8','#c9b8f0'];
 const EMOJI=['🩺','🦄','🌈','✨','🌅','☀️','🌙','💼','🎲','🙏','🛒','💡','🏃','🍽️','📚','🏠','🎨','❤️'];
@@ -319,7 +319,8 @@ const saveT=()=>{try{localStorage.setItem(TK,JSON.stringify(T))}catch(e){}};
 let busy=false;
 async function sync(joining){
   if(!DB_URL||!T.code||busy)return;busy=true;status('Syncing…');
-  const url=DB_URL.replace(/\/$/,'')+'/notes/'+T.code+'.json';
+  let base=DB_URL.trim().replace(/\/+$/,'').replace(/\/notes$/,'');if(!/^https?:\/\//.test(base))base='https://'+base;
+  const url=base+'/notes/'+T.code+'.json';
   try{
     const r=await fetch(url);if(!r.ok)throw new Error('Could not reach the sync server ('+r.status+').');
     const raw=await r.json();
@@ -334,7 +335,7 @@ async function sync(joining){
     save(false);
     if(before!==JSON.stringify([S.days[cur],S.reminders])){if(!document.activeElement||!document.activeElement.closest('.sec'))renderSecs();renderRem()}
     status('Synced at '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}));
-  }catch(e){status(e.message)}
+  }catch(e){status(e instanceof TypeError?'Can’t reach '+base.replace(/^https?:\/\//,'')+'. Check the database address in index.html, then any ad blocker or network filter.':e.message)}
   busy=false;
 }
 $('syncbtn').onclick=()=>{showDlg();$('dlg').showModal()};
