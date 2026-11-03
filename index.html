@@ -107,6 +107,7 @@ textarea:focus{outline:none;background:color-mix(in srgb,var(--c,var(--sky)) 12%
         <button class="pri" id="radd">Add reminder</button>
       </div>
       <div id="rlist"></div>
+      <div class="row"><button id="tsound">🔔 Test sound</button></div>
       <p class="note">Reminders ring while this page is open on each device. Allow notifications to hear about them even from another tab.</p>
     </aside>
   </div>
@@ -255,6 +256,7 @@ $('radd').onclick=()=>{
   S.reminders.push({id:uid(),date:cur,time,text,done:false,u:Date.now()});
   $('rtext').value='';save();renderRem();check();
 };
+$('tsound').onclick=()=>{beep();toast('Sound on! You’ll hear reminders like this.',false)};
 $('rtext').addEventListener('keydown',e=>{if(e.key==='Enter')$('radd').click()});
 $('rlist').addEventListener('click',e=>{
   const row=e.target.closest('.rem');if(!row)return;
@@ -267,11 +269,17 @@ $('rlist').addEventListener('click',e=>{
 
 /* Alerts */
 let ac;
+function ctx(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}return ac}
+['pointerdown','keydown','touchstart','click'].forEach(ev=>document.addEventListener(ev,ctx,{passive:true}));
 function beep(){
-  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
-    [660,880,1100].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type='sine';
-      o.connect(g);g.connect(ac.destination);const t=ac.currentTime+i*.16;
-      g.gain.setValueAtTime(.15,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.start(t);o.stop(t+.16)})}catch(e){}
+  const c=ctx();if(!c)return;
+  const play=()=>{const t0=c.currentTime+.05;
+    [0,.9].forEach(off=>[660,880,1100,1320].forEach((f,i)=>{
+      const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;
+      o.connect(g);g.connect(c.destination);const t=t0+off+i*.18;
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.3);
+      o.start(t);o.stop(t+.32)}))};
+  if(c.state==='running')play();else c.resume().then(play).catch(()=>{});
 }
 function toast(msg,sound){
   const el=document.createElement('div');el.className='toast';
